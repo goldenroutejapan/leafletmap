@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GPS Picker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+      margin: 0;
+      text-align: center;
+    }
+    #logo {
+      max-width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    #header {
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+    #map {
+      height: 300px;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    #copyBtn {
+      margin-left: 10px;
+      padding: 4px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    #copyBtn:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    #copyStatus {
+      font-size: 13px;
+      color: green;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <img id="logo" src="https://images.fillout.com/orgid-340094/flowpublicid-oEEd5i2m4Cus/widgetid-4vCssBnvkaQytjSZoAzciZ/aZJb7ud2uKb7M93Rcdp2gT/mapzamurai-black-on-white.png?a=pRrFV2hTRrYufupyqcCpKF" alt="MapZamurai Logo">
+
+  <!-- Header with coords and button -->
+  <div id="header">
+    <span id="coords">Lat: —, Lng: —</span>
+    <button id="copyBtn" disabled>Copy</button>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+  <div id="copyStatus"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Geocoder JS -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script>
+    const map = L.map('map').setView([36.2048, 138.2529], 5); // Japan
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.Control.geocoder({
+      defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+      const latlng = e.geocode.center;
+      map.setView(latlng, 12);
+      updateCoords(latlng);
+    })
+    .addTo(map);
+
+    let marker;
+    let lastCoords = '';
+
+    map.on('click', function(e) {
+      updateCoords(e.latlng);
+    });
+
+    function updateCoords(latlng) {
+      const lat = latlng.lat.toFixed(6);
+      const lng = latlng.lng.toFixed(6);
+      lastCoords = `${lat}, ${lng}`;
+      document.getElementById('coords').innerText = `Lat: ${lat}, Lng: ${lng}`;
+      document.getElementById('copyBtn').disabled = false;
+      document.getElementById('copyStatus').innerText = '';
+
+      if (marker) {
+        marker.setLatLng(latlng);
+      } else {
+        marker = L.marker(latlng).addTo(map);
+      }
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      navigator.clipboard.writeText(lastCoords)
+        .then(() => {
+          document.getElementById('copyStatus').innerText = 'Copied!';
+        })
+        .catch(() => {
+          document.getElementById('copyStatus').innerText = 'Failed to copy.';
+        });
+    });
+  </script>
+
+</body>
+</html>
