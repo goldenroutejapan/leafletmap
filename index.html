@@ -95,4 +95,33 @@
       const lat = latlng.lat.toFixed(6);
       const lng = latlng.lng.toFixed(6);
       lastCoords = `${lat}, ${lng}`;
-      document.getElementById('coords
+      document.getElementById('coords').innerText = `Lat: ${lat}, Lng: ${lng}`;
+      document.getElementById('copyBtn').disabled = false;
+      document.getElementById('copyStatus').innerText = '';
+
+      if (marker) {
+        marker.setLatLng(latlng);
+      } else {
+        marker = L.marker(latlng).addTo(map);
+      }
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      navigator.clipboard.writeText(lastCoords)
+        .then(() => {
+          document.getElementById('copyStatus').innerText = 'Copied!';
+        })
+        .catch(() => {
+          document.getElementById('copyStatus').innerText = 'Failed to copy.';
+        });
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>
