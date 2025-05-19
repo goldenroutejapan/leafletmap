@@ -17,11 +17,6 @@
       margin: 0;
       text-align: center;
     }
-    #logo {
-      max-width: 200px;
-      height: auto;
-      margin-bottom: 10px;
-    }
     #header {
       font-size: 15px;
       margin-bottom: 5px;
@@ -57,9 +52,6 @@
 </head>
 <body>
 
-  <!-- Logo -->
-  <img id="logo" src="https://images.fillout.com/orgid-340094/flowpublicid-oEEd5i2m4Cus/widgetid-4vCssBnvkaQytjSZoAzciZ/aZJb7ud2uKb7M93Rcdp2gT/mapzamurai-black-on-white.png?a=pRrFV2hTRrYufupyqcCpKF" alt="MapZamurai Logo">
-
   <!-- Header with coords and button -->
   <div id="header">
     <span id="coords">Lat: —, Lng: —</span>
@@ -76,7 +68,7 @@
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
   <script>
-    const map = L.map('map').setView([36.2048, 138.2529], 5); // Center on Japan
+    const map = L.map('map').setView([36.2048, 138.2529], 5); // Japan
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -103,34 +95,4 @@
       const lat = latlng.lat.toFixed(6);
       const lng = latlng.lng.toFixed(6);
       lastCoords = `${lat}, ${lng}`;
-      document.getElementById('coords').innerText = `Lat: ${lat}, Lng: ${lng}`;
-      document.getElementById('copyBtn').disabled = false;
-      document.getElementById('copyStatus').innerText = '';
-
-      if (marker) {
-        marker.setLatLng(latlng);
-      } else {
-        marker = L.marker(latlng).addTo(map);
-      }
-    }
-
-    document.getElementById('copyBtn').addEventListener('click', function() {
-      navigator.clipboard.writeText(lastCoords)
-        .then(() => {
-          document.getElementById('copyStatus').innerText = 'Copied!';
-        })
-        .catch(() => {
-          document.getElementById('copyStatus').innerText = 'Failed to copy.';
-        });
-    });
-
-    // Fix for rendering inside iframe
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 300);
-    });
-  </script>
-
-</body>
-</html>
+      document.getElementById('coords
